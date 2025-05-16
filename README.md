@@ -81,7 +81,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 │       └── type.ts            # Shared types and interfaces
 ├── tsconfig.json
 
-```text
+```
+
 
 ## Tutorial
 Follow these steps to use the platform:
