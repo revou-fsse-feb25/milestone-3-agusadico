@@ -48,12 +48,15 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 ## Project Structure
+
+.
 ├── README.md
 ├── next.config.ts
 ├── package.json
 ├── public/
 │   ├── images/                # Static images for banners, logos, and promos
 │   └── img-tutorial/          # Step-by-step tutorial images for documentation
+├── src/
 │   ├── app/                   # Next.js application pages and layouts
 │   │   ├── [id]/              # Dynamic route for product or page details
 │   │   ├── cart/              # Cart page and related logic
