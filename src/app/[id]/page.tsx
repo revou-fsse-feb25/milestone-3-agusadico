@@ -11,7 +11,8 @@ import Link from 'next/link';
 import ShopCard from '../../components/ShopCard';
 import ProductPriceQuantityClient from '../../components/ProductPriceQuantityClient';
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
+//export default async function ProductPage({ params }: { params: { id: string } }) {
+export default async function ProductPage({ params, searchParams }: { params: { id: string }, searchParams: { [key: string]: string | string[] | undefined } }) {
   const product: Product = await fetchProductById(params.id);
   if (!product) return <div>Product not found</div>;
   const relatedProducts: Product[] = await fetchRelatedProducts(params.id);
