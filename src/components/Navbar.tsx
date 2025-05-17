@@ -59,8 +59,8 @@ export default async function Navbar() {
           <div className="flex gap-4">
             <Link href="/" className="text-yellow-500 font-semibold">Home <span className="fa-solid fa-chevron-down text-xs ml-1"></span></Link>
             <Link href="#" className="hover:text-yellow-500">Shop <span className="fa-solid fa-chevron-down text-xs ml-1"></span></Link>
-            <Link href="#" className="hover:text-yellow-500">About</Link>
-            <Link href="#" className="hover:text-yellow-500">Blog <span className="fa-solid fa-chevron-down text-xs ml-1"></span></Link>
+            <Link href="/about" className="hover:text-yellow-500">About</Link>
+            <Link href="/faq" className="hover:text-yellow-500">FAQ</Link>
             <Link href="#" className="hover:text-yellow-500">Contact</Link>
           </div>
           <span className="text-red-600 font-semibold flex items-center gap-2"><span className="fa-solid fa-percent"></span> Weekly Discount 30%!</span>
