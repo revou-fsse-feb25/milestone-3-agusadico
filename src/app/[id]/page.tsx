@@ -9,17 +9,23 @@ import QuantitySelector from "../../components/QuantitySelector";
 import AddToCartButton from '../../components/AddToCartButton';
 import Link from 'next/link';
 import ShopCard from '../../components/ShopCard';
+//import { useSearchParams } from 'next/navigation';
 import ProductPriceQuantityClient from '../../components/ProductPriceQuantityClient';
 
-//export default async function ProductPage({ params }: { params: { id: string } }) {
-export default async function ProductPage({ params, searchParams }: { params: { id: string }, searchParams: { [key: string]: string | string[] | undefined } }) {
-  const product: Product = await fetchProductById(params.id);
-  if (!product) return <div>Product not found</div>;
-  const relatedProducts: Product[] = await fetchRelatedProducts(params.id);
-  // const sizes = ['100gm', '500gm'];
 
+//export default async function ProductPage({ params }: { params: { id: string } }) {
+<!-- export default async function ProductPage({ params, searchParams }: { params: { id: string }, searchParams: { [key: string]: string | string[] | undefined } }) {
+  const product: Product = await fetchProductById(params.id); -->
+
+export default async function ProductPage({ params, searchParams }: { params: { id: string }; searchParams: { [key: string]: string | string[] | undefined } }) {
+//export default async function ProductPage({ params }: { params: { id: string } }) {
+  const { id } = params;
+  const product: Product = await fetchProductById(id);
+
+  if (!product) return <div>Product not found</div>;
+  const relatedProducts: Product[] = await fetchRelatedProducts(id);
   return (
-    <div className="bg-white min-h-screen font-sans">
+    <div>
       <Navbar />
       <main className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 py-12 px-4">
         {/* Product Image */}
