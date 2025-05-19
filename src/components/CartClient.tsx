@@ -5,20 +5,46 @@ import { fetchProductById } from "../services/shopServices";
 export default function CartClient() {
   const [cartItems, setCartItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [errors, setErrors] = useState<string[]>([]);
 
   useEffect(() => {
     async function loadCart() {
-      const stored = localStorage.getItem("cart");
-      const cart = stored ? JSON.parse(stored) : [];
-      // Fetch product details from API for each cart item
-      const products = await Promise.all(
-        cart.map(async (item: any) => {
-          const prod = await fetchProductById(item.id);
-          return prod ? { ...prod, quantity: item.quantity } : null;
-        })
-      );
-      setCartItems(products.filter(Boolean));
-      setLoading(false);
+      try {
+        const stored = localStorage.getItem("cart");
+        const cart = stored ? JSON.parse(stored) : [];
+        
+        // Fetch product details from API for each cart item
+        const productsWithErrors: any[] = [];
+        const products = await Promise.all(
+          cart.map(async (item: any) => {
+            try {
+              const prod = await fetchProductById(item.id);
+              return prod ? { ...prod, quantity: item.quantity } : null;
+            } catch (error) {
+              // If a product can't be found, add to errors and return null
+              productsWithErrors.push(item.id);
+              return null;
+            }
+          })
+        );
+        
+        // Filter out failed products and set error messages
+        setCartItems(products.filter(Boolean));
+        
+        // If there were errors, set them to display to the user
+        if (productsWithErrors.length > 0) {
+          setErrors([`Some products (IDs: ${productsWithErrors.join(', ')}) could not be found and were removed from your cart.`]);
+          
+          // Update localStorage to remove invalid products
+          const validCart = cart.filter((item: any) => !productsWithErrors.includes(item.id));
+          localStorage.setItem('cart', JSON.stringify(validCart));
+        }
+      } catch (error) {
+        console.error('Error loading cart:', error);
+        setErrors(['There was a problem loading your cart. Please try again.']);
+      } finally {
+        setLoading(false);
+      }
     }
     loadCart();
   }, []);
@@ -40,6 +66,16 @@ export default function CartClient() {
       <div className="mb-4 text-sm text-gray-500">
         <a href="/">Home</a> &gt; <span className="text-yellow-600 font-semibold">Cart</span>
       </div>
+      
+      {/* Display errors if any */}
+      {errors.length > 0 && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+          {errors.map((error, index) => (
+            <p key={index}>{error}</p>
+          ))}
+        </div>
+      )}
+      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-2">
           <div className="bg-white rounded-xl shadow p-6">

@@ -19,15 +19,20 @@ export default function NavbarSearch() {
       return;
     }
     debounceRef.current = setTimeout(async () => {
-      setSearching(true);
-      try {
-        const results = await searchProductsByTitle(value);
-        setSearchResults(results);
-      } catch (error) {
+      // Only search if the value contains a space or is at least 3 characters long
+      if (value.trim().includes(" ") || value.trim().length >= 3) {
+        setSearching(true);
+        try {
+          const results = await searchProductsByTitle(value);
+          setSearchResults(results);
+        } catch (error) {
+          setSearchResults([]);
+        }
+        setSearching(false);
+      } else {
         setSearchResults([]);
       }
-      setSearching(false);
-    }, 350); // 350ms debounce
+    }, 350);
   };
 
   return (

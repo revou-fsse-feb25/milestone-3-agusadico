@@ -5,7 +5,8 @@ import { Product } from '../types/type';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 
-export default async function Home({ searchParams }: { searchParams: { view?: string } }) {
+//export default async function Home({ searchParams }: { searchParams: { view?: string } }) {
+export default async function Home({ searchParams }: any) {
   let products: Product[] = [];
   let error = '';
   try {

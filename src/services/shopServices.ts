@@ -15,7 +15,10 @@ export async function fetchProducts(): Promise<Product[]> {
 export async function fetchProductById(id: string): Promise<Product> {
   try {
     const res = await fetch(`https://api.escuelajs.co/api/v1/products/${id}`);
-    if (!res.ok) throw new Error('Failed to fetch product');
+    if (!res.ok) {
+      const errorText = await res.text().catch(() => 'No error details available');
+      throw new Error(`Failed to fetch product: ${res.status} ${res.statusText}. ${errorText}`);
+    }
     return await res.json();
   } catch (error) {
     console.error('Error in fetchProductById:', error);
