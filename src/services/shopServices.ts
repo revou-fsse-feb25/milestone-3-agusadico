@@ -17,6 +17,14 @@ export async function fetchProductById(id: string): Promise<Product> {
     const res = await fetch(`https://api.escuelajs.co/api/v1/products/${id}`);
     if (!res.ok) {
       const errorText = await res.text().catch(() => 'No error details available');
+      
+      // Check if this is an EntityNotFoundError
+      if (res.status === 400 && errorText.includes('EntityNotFoundError')) {
+        console.warn(`Product with ID ${id} not found, using fallback product`);
+        // Return a fallback product or throw a more specific error
+        throw new Error(`Product not found: ${id}`);
+      }
+      
       throw new Error(`Failed to fetch product: ${res.status} ${res.statusText}. ${errorText}`);
     }
     return await res.json();

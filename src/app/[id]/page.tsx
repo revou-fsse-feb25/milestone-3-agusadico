@@ -97,6 +97,7 @@ async function ProductPage({ params, searchParams }: any) {
     );
   } catch (error) {
     // Handle the error gracefully
+    console.error('Error fetching product:', error);
     return (
       <div>
         <Navbar />
