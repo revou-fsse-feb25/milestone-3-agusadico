@@ -9,10 +9,9 @@ import QuantitySelector from "../../components/QuantitySelector";
 import AddToCartButton from '../../components/AddToCartButton';
 import Link from 'next/link';
 import ShopCard from '../../components/ShopCard';
-//import { useSearchParams } from 'next/navigation';
 import ProductPriceQuantityClient from '../../components/ProductPriceQuantityClient';
 
-// Define the component without type annotations
+
 async function ProductPage({ params, searchParams }: any) {
   const { id } = params;
   
@@ -26,14 +25,14 @@ async function ProductPage({ params, searchParams }: any) {
       <div>
         <Navbar />
         <main className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 py-12 px-4">
-          {/* Product Image */}
+        
           <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center justify-center">
             <div className="relative w-full flex justify-center">
               <img src={product.images?.[0] || '/images/placeholder.png'} alt={product.title} className="w-72 h-72 object-contain rounded-xl border" />
               <button className="absolute top-2 right-2 bg-white rounded-full p-2 shadow text-gray-400 hover:text-green-600 transition" title="Expand"><svg width="20" height="20" fill="none" stroke="currentColor"><circle cx="10" cy="10" r="9" strokeWidth="2"/><path d="M7 10h6M10 7v6" strokeWidth="2"/></svg></button>
             </div>
           </div>
-          {/* Product Info */}
+        
           <div className="col-span-2 flex flex-col md:flex-row gap-8">
             <div className="flex-1">
               <h1 className="text-2xl font-bold mb-2">{product.title}</h1>
@@ -57,12 +56,11 @@ async function ProductPage({ params, searchParams }: any) {
                 <a href="#"><span className="fa-brands fa-linkedin"></span></a>
               </div>
             </div>
-            {/* Price & Cart */}
+           
             <div className="w-full md:w-80 bg-white border rounded-xl shadow p-6 flex flex-col gap-4 justify-center">
               <ProductPriceQuantityClient product={product} />
               <div className="flex items-center gap-2 mb-2">
-                {/* <QuantitySelector /> */}
-                {/* <AddToCartButton product={product} /> */}
+
               </div>
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex flex-col items-center">
                 <span className="text-black font-semibold mb-2">Guaranteed Safe Checkout</span>
@@ -75,7 +73,7 @@ async function ProductPage({ params, searchParams }: any) {
             </div>
           </div>
         </main>
-        {/* Related Products Section */}
+
         <section className="max-w-7xl mx-auto px-4 pb-12">
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">Related Products <span className="border-b-2 border-gray-200 flex-1"></span></h2>
           <div className="overflow-x-auto">
@@ -96,7 +94,7 @@ async function ProductPage({ params, searchParams }: any) {
       </div>
     );
   } catch (error) {
-    // Handle the error gracefully
+
     console.error('Error fetching product:', error);
     return (
       <div>
@@ -116,6 +114,5 @@ async function ProductPage({ params, searchParams }: any) {
   }
 }
 
-// Export it separately
 export default ProductPage;
 
