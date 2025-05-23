@@ -1,38 +1,81 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { searchProductsByTitle } from "../services/shopServices";
 import { Product } from "../types/type";
 import Link from "next/link";
+import { useDebounce } from "../hooks/useDebounce";
 
 export default function NavbarSearch() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [searching, setSearching] = useState(false);
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Use our custom useDebounce hook
+  const debouncedSearchTerm = useDebounce(searchTerm, 350);
+  
+  // Effect to handle the debounced search term
+  useEffect(() => {
+    if (debouncedSearchTerm.trim() === "") {
+      setSearchResults([]);
+      setHasSearched(false);
+      return;
+    }
+    
+    if (!isTyping) {
+      const performSearch = async () => {
+        setSearching(true);
+        try {
+          // Get results from API
+          const results = await searchProductsByTitle(debouncedSearchTerm);
+          
+          // Check if the search term is a complete word in the product title
+          const matches = results.filter(product => {
+            const productTitle = product.title.toLowerCase();
+            const searchValue = debouncedSearchTerm.toLowerCase();
+            
+            // Split the product title into words
+            const words = productTitle.split(/\s+/);
+            
+            // Check if any word in the product title matches the search term
+            return words.some(word => word === searchValue);
+          });
+          
+          setSearchResults(matches);
+          setHasSearched(true);
+        } catch (error) {
+          setSearchResults([]);
+          setHasSearched(true);
+        }
+        setSearching(false);
+      };
+      
+      performSearch();
+    }
+  }, [debouncedSearchTerm, isTyping]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
+    setIsTyping(true);
+    setHasSearched(false);
+    
+    // Clear any existing typing timeout
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    
     if (value.trim() === "") {
       setSearchResults([]);
+      setHasSearched(false);
+      setIsTyping(false);
       return;
     }
-    debounceRef.current = setTimeout(async () => {
-      // Only search if the value contains a space or is at least 3 characters long
-      if (value.trim().includes(" ") || value.trim().length >= 3) {
-        setSearching(true);
-        try {
-          const results = await searchProductsByTitle(value);
-          setSearchResults(results);
-        } catch (error) {
-          setSearchResults([]);
-        }
-        setSearching(false);
-      } else {
-        setSearchResults([]);
-      }
-    }, 350);
+    
+    // Set a timeout to detect when user has stopped typing
+    typingTimeoutRef.current = setTimeout(() => {
+      setIsTyping(false);
+    }, 800);
   };
 
   return (
@@ -48,14 +91,14 @@ export default function NavbarSearch() {
         <button
           type="submit"
           className="px-6 py-2 bg-yellow-400 text-white rounded-r-full hover:bg-yellow-500 transition-colors"
-          disabled={searching}
+          disabled={searching || isTyping}
         >
-          {searching ? "Searching..." : "Search"}
+          {searching ? "Searching..." : isTyping ? "Typing..." : "Search"}
         </button>
       </form>
-      {searchTerm && !searching && searchResults.length === 0 && (
+      {searchTerm && !searching && !isTyping && hasSearched && searchResults.length === 0 && (
         <div className="absolute left-0 right-0 mt-2 z-50 bg-white rounded-xl shadow-lg border border-gray-200 max-h-96 overflow-y-auto flex items-center justify-center py-8">
-          <span className="text-gray-500 text-lg font-semibold">Oops! We couldn’t find what you're looking for. Want to try another search?</span>
+          <span className="text-gray-500 text-lg font-semibold">Product not found</span>
         </div>
       )}
       {searchResults.length > 0 && (

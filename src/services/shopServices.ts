@@ -21,8 +21,14 @@ export async function fetchProductById(id: string): Promise<Product> {
       // Check if this is an EntityNotFoundError
       if (res.status === 400 && errorText.includes('EntityNotFoundError')) {
         console.warn(`Product with ID ${id} not found, using fallback product`);
-        // Return a fallback product or throw a more specific error
-        throw new Error(`Product not found: ${id}`);
+        // Instead of throwing an error, return a fallback product
+        return {
+          id: id,
+          title: "Product Not Available",
+          images: ["/images/logo-revoshop.jpg"],
+          price: 0,
+          description: "This product is no longer available."
+        };
       }
       
       throw new Error(`Failed to fetch product: ${res.status} ${res.statusText}. ${errorText}`);
