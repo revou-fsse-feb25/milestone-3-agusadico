@@ -10,7 +10,24 @@ Revoshop is a modern e-commerce web application featuring:
 - Add to cart functionality with quantity selection
 - Cart management using localStorage
 - Responsive design with Tailwind CSS
-- Server-side rendering (SSR) for product pages
+- Server-side rendering (SSR) for product, about, detail product, home pages
+- Client-side rendering (CSR) for cart and checkout pages
+- SSG for static FAQ pages
+- Product search functionality
+- User account management
+- Admin Dashboard for managing products and orders
+- User authentication and authorization
+- Email notifications for order confirmation
+- SEO-friendly URLs and metadata
+- Customizable theme with Tailwind CSS
+- Performance optimization with Next.js
+- Error handling and logging
+- Unit and integration tests with Jest
+- Continuous integration with GitHub Actions
+- Deployment on Vercel
+- Automated testing with GitHub Actions
+- Code coverage reporting
+
 
 ## Getting Started
 

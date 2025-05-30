@@ -16,8 +16,8 @@ export default function CartClient() {
       return;
     }
     
-    // In a real app, you would redirect to checkout
-    alert('Proceeding to checkout...');
+    // Redirect to checkout page
+    router.push('/checkout');
   };
 
   return (
