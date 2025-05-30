@@ -1,6 +1,9 @@
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 
+export const dynamic = 'force-static';
+export const revalidate = false;
+
 export default function FaqPage() {
   return (
     <div>

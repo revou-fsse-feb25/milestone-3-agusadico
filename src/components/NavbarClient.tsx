@@ -1,12 +1,31 @@
+'use client';
+
 import Image from "next/image";
-import { fetchCategories } from '../services/shopServices';
-import { Category } from '../types/type';
 import Link from "next/link";
+import { useState, useEffect } from 'react';
+import { Category } from '../types/type';
 import NavbarSearch from './NavbarSearch';
 import NavbarAuthWrapper from './NavbarAuthWrapper';
 
-export default async function Navbar() {
-  const categories: Category[] = await fetchCategories();
+export default function NavbarClient() {
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    // Fetch categories on client side
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/categories'); // Adjust this endpoint as needed
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error('Failed to fetch categories:', error);
+        setCategories([]);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   return (
     <>
       <div className="w-full bg-white">

@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FaqPage Snapshot should match snapshot 1`] = `
+<div>
+  <nav
+    data-testid="navbar"
+  >
+    Navbar
+  </nav>
+  <main
+    class="max-w-4xl mx-auto py-12 px-4"
+  >
+    <h1
+      class="text-3xl font-bold mb-4"
+    >
+      Frequently Asked Questions (FAQ)
+    </h1>
+    <div
+      class="mb-6"
+    >
+      <h2
+        class="text-xl font-semibold mb-2"
+      >
+        What is RevoShop?
+      </h2>
+      <p>
+        RevoShop is Indonesia's leading online shop, offering a wide range of products and a seamless shopping experience.
+      </p>
+    </div>
+    <div
+      class="mb-6"
+    >
+      <h2
+        class="text-xl font-semibold mb-2"
+      >
+        How do I place an order?
+      </h2>
+      <p>
+        Simply browse our products, add items to your cart, and proceed to checkout. Follow the instructions to complete your purchase.
+      </p>
+    </div>
+    <div
+      class="mb-6"
+    >
+      <h2
+        class="text-xl font-semibold mb-2"
+      >
+        What payment methods are accepted?
+      </h2>
+      <p>
+        We accept various payment methods including credit cards, PayPal, and bank transfers.
+      </p>
+    </div>
+    <div
+      class="mb-6"
+    >
+      <h2
+        class="text-xl font-semibold mb-2"
+      >
+        How can I contact customer support?
+      </h2>
+      <p>
+        You can reach us at support@revoshop.com or via our contact page for any assistance.
+      </p>
+    </div>
+  </main>
+  <footer
+    data-testid="footer"
+  >
+    Footer
+  </footer>
+</div>
+`;

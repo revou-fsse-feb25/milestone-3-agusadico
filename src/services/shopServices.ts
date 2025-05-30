@@ -1,7 +1,7 @@
 import { Product } from '../types/type';
 import { Category } from '../types/type';
 
-export async function fetchProducts(): Promise<Product[]> {
+export async function fetchProducts(offset: number = 0, limit: number = 20): Promise<Product[]>{
   try {
     const res = await fetch('https://api.escuelajs.co/api/v1/products?offset=0&limit=20');
     if (!res.ok) throw new Error('Failed to fetch products');

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-// import MobileMenu from '../components/MobileMenu'; // Incorrect
-// import MobileMenu from '../components/MobileMenu'; // Correct if file exists
+import SessionProvider from "../providers/SessionProvider";
+import { CartProvider } from "../providers/CartProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,9 +29,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* ...Navbar... */}
-        {/* <MobileMenu /> */}
-        {children}
+        <SessionProvider>
+          <CartProvider>
+            {children}
+          </CartProvider>
+        </SessionProvider>
       </body>
     </html>
   );

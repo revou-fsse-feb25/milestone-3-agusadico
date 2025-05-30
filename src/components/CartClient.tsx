@@ -1,80 +1,30 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { fetchProductById } from "../services/shopServices";
+import React from "react";
+import { useCart } from "../providers/CartProvider";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function CartClient() {
-  const [cartItems, setCartItems] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [errors, setErrors] = useState<string[]>([]);
+  const { cartItems, removeFromCart, updateQuantity, subtotal } = useCart();
+  const { data: session } = useSession();
+  const router = useRouter();
 
-  useEffect(() => {
-    async function loadCart() {
-      try {
-        const stored = localStorage.getItem("cart");
-        const cart = stored ? JSON.parse(stored) : [];
-        
-        // Fetch product details from API for each cart item
-        const productsWithErrors: any[] = [];
-        const products = await Promise.all(
-          cart.map(async (item: any) => {
-            try {
-              const prod = await fetchProductById(item.id);
-              return prod ? { ...prod, quantity: item.quantity } : null;
-            } catch (error) {
-              // If a product can't be found, add to errors and return null
-              productsWithErrors.push(item.id);
-              return null;
-            }
-          })
-        );
-        
-        // Filter out failed products and set error messages
-        setCartItems(products.filter(Boolean));
-        
-        // If there were errors, set them to display to the user
-        if (productsWithErrors.length > 0) {
-          setErrors([`Some products (IDs: ${productsWithErrors.join(', ')}) could not be found and were removed from your cart.`]);
-          
-          // Update localStorage to remove invalid products
-          const validCart = cart.filter((item: any) => !productsWithErrors.includes(item.id));
-          localStorage.setItem('cart', JSON.stringify(validCart));
-        }
-      } catch (error) {
-        console.error('Error loading cart:', error);
-        setErrors(['There was a problem loading your cart. Please try again.']);
-      } finally {
-        setLoading(false);
-      }
+  const handleCheckout = () => {
+    if (!session) {
+      router.push('/login?callbackUrl=/checkout');
+      return;
     }
-    loadCart();
-  }, []);
-
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-  if (loading) return (
-    <div className="py-10 text-center text-gray-400 flex flex-col items-center justify-center">
-      <svg className="animate-spin h-8 w-8 text-gray-400 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-      </svg>
-      Loading cart...
-    </div>
-  );
+    
+    // In a real app, you would redirect to checkout
+    alert('Proceeding to checkout...');
+  };
 
   return (
     <div className="max-w-7xl mx-auto py-10 px-4">
       <div className="mb-4 text-sm text-gray-500">
-        <a href="/">Home</a> &gt; <span className="text-yellow-600 font-semibold">Cart</span>
+        <Link href="/">Home</Link> &gt; <span className="text-yellow-600 font-semibold">Cart</span>
       </div>
-      
-      {/* Display errors if any */}
-      {errors.length > 0 && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-          {errors.map((error, index) => (
-            <p key={index}>{error}</p>
-          ))}
-        </div>
-      )}
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-2">
@@ -96,7 +46,12 @@ export default function CartClient() {
                 ) : cartItems.map(item => (
                   <tr key={item.id} className="border-b last:border-b-0">
                     <td className="py-2 text-center">
-                      <button className="text-red-600 hover:text-red-800 text-xl">&times;</button>
+                      <button 
+                        className="text-red-600 hover:text-red-800 text-xl"
+                        onClick={() => removeFromCart(item.id)}
+                      >
+                        &times;
+                      </button>
                     </td>
                     <td>
                       <img src={item.images?.[0] || "/images/logo-revoshop.jpg"} alt={item.title} className="w-12 h-12 object-cover rounded" />
@@ -110,26 +65,14 @@ export default function CartClient() {
                       <div className="flex items-center rounded w-max py-4">
                         <button
                           className="px-2 py-0 rounded-full border border-yellow-500 text-yellow-700 bg-yellow-50 hover:bg-yellow-100 font-semibold text-xl"
-                          onClick={() => {
-                            const updatedCart = cartItems.map(ci =>
-                              ci.id === item.id ? { ...ci, quantity: ci.quantity - 1 } : ci
-                            );
-                            setCartItems(updatedCart);
-                            localStorage.setItem('cart', JSON.stringify(updatedCart));
-                          }}
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
                         >
                           -
                         </button>
                         <span className="px-3">{item.quantity}</span>
                         <button
                           className="px-2 py-0 rounded-full border border-yellow-500 text-yellow-700 bg-yellow-50 hover:bg-yellow-100 font-semibold text-xl"
-                          onClick={() => {
-                            const updatedCart = cartItems.map(ci =>
-                              ci.id === item.id ? { ...ci, quantity: ci.quantity + 1 } : ci
-                            );
-                            setCartItems(updatedCart);
-                            localStorage.setItem('cart', JSON.stringify(updatedCart));
-                          }}
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
                         >
                           +
                         </button>
@@ -147,9 +90,6 @@ export default function CartClient() {
                 onClick={() => alert('No Coupon for this period')}>
                 Apply Coupon
               </button>
-              {/* <button 
-                className="bg-yellow-400 text-black px-4 py-2 rounded hover:bg-orange-400"
-                onClick={() => alert('Your Cart is Updated')}>Update Cart</button> */}
             </div>
           </div>
         </div>
@@ -166,7 +106,9 @@ export default function CartClient() {
             </div>
             <button 
                 className="w-full bg-yellow-400 text-black py-3 rounded font-semibold hover:bg-orange-400"
-                onClick={() => alert('Your Product will Proceed to Checkout')}>Proceed to Checkout</button>
+                onClick={handleCheckout}>
+                Proceed to Checkout
+            </button>
           </div>
         </div>
       </div>
