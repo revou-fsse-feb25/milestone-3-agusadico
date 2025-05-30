@@ -3,10 +3,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Product } from '../../../types/type';
 
 // In-memory product store for demo (replace with DB in production)
-export let products: Product[] = [];
+let products: Product[] = [];
 
-// Export a function to reset products for testing
-export function resetProducts() {
+// Helper function to reset products for testing (not exported)
+function resetProducts() {
   products = [];
 }
 
