@@ -61,6 +61,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 │   ├── app/                   # Next.js application pages and layouts
 │   │   ├── [id]/              # Dynamic route for product or page details
 │   │   ├── cart/              # Cart page and related logic
+│   │   ├── checkout/          # Checkout page and success page
+│   │   │   ├── page.tsx       # Checkout page (protected)
+│   │   │   └── success/       # Order success page
+│   │   │       └── page.tsx   # Checkout success page (protected)
 │   │   ├── favicon.ico        # Site favicon
 │   │   ├── globals.css        # Global CSS styles
 │   │   ├── layout.tsx         # Main layout component
@@ -68,6 +72,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 │   ├── components/            # Reusable React components
 │   │   ├── AddToCartButton.tsx            # Button to add products to cart
 │   │   ├── CartClient.tsx                 # Cart display and logic
+│   │   ├── CheckoutClient.tsx             # Checkout page logic and form
 │   │   ├── Footer.tsx                     # Site footer
 │   │   ├── Navbar.tsx                     # Top navigation bar
 │   │   ├── NavbarSearch.tsx               # Search bar in navbar
@@ -91,4 +96,7 @@ Follow these steps to use the platform:
 ![Step 3](public/img-tutorial/3.jpg)
 ![Step 4](public/img-tutorial/4.jpg)
 ![Step 5](public/img-tutorial/5.jpg)
+![Step 6](public/img-tutorial/6.jpg)
+![Step 7](public/img-tutorial/7.jpg)
+![Step 8](public/img-tutorial/8.jpg)
 
