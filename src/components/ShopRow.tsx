@@ -1,8 +1,17 @@
+'use client';
+
 import { Product } from '../types/type';
 import ShopCard from './ShopCard';
 import Link from 'next/link';
+import { useCart } from '../providers/CartProvider';
 
 export default function ShopRow({ products, viewMode }: { products: Product[], viewMode: 'card' | 'list' }) {
+  const { addToCart } = useCart();
+  
+  const handleAddToCart = (product: Product) => {
+    addToCart(product, 1);
+  };
+  
   if (viewMode === 'list') {
     return (
       <div className="flex flex-col gap-4">
@@ -14,7 +23,12 @@ export default function ShopRow({ products, viewMode }: { products: Product[], v
               <div className="text-black font-semibold">${product.price}</div>
             </div>
             <div className="flex gap-2">
-              <button className="bg-yellow-100 text-black px-3 py-1 rounded hover:bg-yellow-400 text-sm">Add to Cart</button>
+              <button 
+                onClick={() => handleAddToCart(product)}
+                className="bg-yellow-100 text-black px-3 py-1 rounded hover:bg-yellow-400 text-sm"
+              >
+                Add to Cart
+              </button>
               <Link href={`/${product.id}`} className="bg-yellow-400 text-black px-3 py-1 rounded hover:bg-yellow-100 text-sm">View Detail</Link>
             </div>
           </div>

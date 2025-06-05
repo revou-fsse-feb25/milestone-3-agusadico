@@ -6,9 +6,34 @@ import { useState, useEffect } from 'react';
 import { Category } from '../types/type';
 import NavbarSearch from './NavbarSearch';
 import NavbarAuthWrapper from './NavbarAuthWrapper';
+import { useCart } from '../providers/CartProvider';
+import { motion } from "framer-motion";
+import { PiShoppingCartSimpleFill } from "react-icons/pi";
 
 export default function NavbarClient() {
   const [categories, setCategories] = useState<Category[]>([]);
+  const { cartItems, showNotification } = useCart();
+  const [mounted, setMounted] = useState(false);
+  const [isCartHighlighted, setIsCartHighlighted] = useState(false);
+  const [prevCartItemsLength, setPrevCartItemsLength] = useState(0);
+
+  // Prevent hydration mismatch by only rendering client-specific elements after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Add animation effect when cart items change
+  useEffect(() => {
+    if (mounted && cartItems.length > prevCartItemsLength) {
+      // Make the cart icon pulse
+      setIsCartHighlighted(true);
+      
+      // Reset the highlight after animation completes
+      const timer = setTimeout(() => setIsCartHighlighted(false), 300);
+      return () => clearTimeout(timer);
+    }
+    setPrevCartItemsLength(cartItems.length);
+  }, [cartItems.length, prevCartItemsLength, mounted]);
 
   useEffect(() => {
     // Fetch categories on client side
@@ -72,13 +97,30 @@ export default function NavbarClient() {
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-heart-fill text-gray-500" viewBox="0 0 16 16">
                 <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
               </svg>
-              <Link href="/cart">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-basket-fill text-gray-500 hover:text-orange-500" viewBox="0 0 16 16">
-                  <path d="M5.071 1.243a.5.5 0 0 1 .858.514L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 6h1.717zM3.5 10.5a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0z"/>
-                </svg>
-              </Link>
+              <div className="relative" style={{ display: 'inline-block' }}>
+                <Link 
+                  href="/cart" 
+                  className={`relative block ${isCartHighlighted ? 'animate-pulse' : ''}`}
+                >
+                  {mounted && (
+                    <>
+                      <PiShoppingCartSimpleFill 
+                        size={24} 
+                        className={`text-gray-500 hover:text-orange-500 transition-all duration-300 ${isCartHighlighted ? 'text-orange-500 scale-110' : ''}`}
+                      />
+                      
+                      {cartItems.length > 0 && (
+                        <span 
+                          className={`absolute -top-2 -right-2 bg-teal-500 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center ${isCartHighlighted ? 'animate-bounce' : ''}`}
+                        >
+                          {cartItems.length}
+                        </span>
+                      )}
+                    </>
+                  )}
+                </Link>
+              </div>
               <NavbarAuthWrapper />
-            {/* <span>Logout</span> */}
             </div>
           </div>
         </nav>
@@ -95,6 +137,19 @@ export default function NavbarClient() {
           <span className="bg-yellow-400 text-black px-6 py-2 rounded font-semibold flex items-center gap-2"><span className="fa-solid fa-phone"></span> Hotline Number: +62812 3456 7890</span>
         </div>
       </div>
+      
+      {/* Toast notification */}
+      {mounted && showNotification && (
+        <motion.div 
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -50 }}
+          className="fixed top-5 right-5 z-50 bg-orange-500 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 font-medium"
+        >
+          <PiShoppingCartSimpleFill size={20} />
+          Item added to cart!
+        </motion.div>
+      )}
     </>
   );
 }

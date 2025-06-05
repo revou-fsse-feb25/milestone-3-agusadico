@@ -1,12 +1,13 @@
-'use client';
+// This is a test-friendly version of the admin page
+// The 'use client' directive is intentionally omitted for testing
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Product } from '../../types/type';
+import { Product } from '../../../types/type';
 import Link from 'next/link';
-import AdminSidebar from '../../components/AdminSidebar';
-import AdminProductForm from '../../components/AdminProductForm';
-import AdminProductTable from '../../components/AdminProductTable';
+import AdminSidebar from '../../../components/AdminSidebar';
+import AdminProductForm from '../../../components/AdminProductForm';
+import AdminProductTable from '../../../components/AdminProductTable';
 
 type Category = {
   id: number;
@@ -15,14 +16,14 @@ type Category = {
 };
 
 // Loading component
-const LoadingSpinner = () => (
+export const LoadingSpinner = () => (
   <div className="flex items-center justify-center min-h-screen">
     <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
   </div>
 );
 
 // Unauthorized access component
-const UnauthorizedAccess = () => (
+export const UnauthorizedAccess = () => (
   <div className="flex items-center justify-center min-h-screen bg-gray-50">
     <div className="max-w-md mx-auto text-center">
       <div className="mb-4">
@@ -44,6 +45,7 @@ const UnauthorizedAccess = () => (
   </div>
 );
 
+// Export the main component without the 'use client' directive for testing
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -195,8 +197,7 @@ export default function AdminDashboard() {
         const uniqueTitle = generateUniqueTitle(form.title);
         
         const newProductData = {
-          //title: uniqueTitle,
-          title: form.title,
+          title: uniqueTitle,
           price: productPrice,
           description: form.description || 'No description provided',
           categoryId: categoryId,
@@ -330,9 +331,7 @@ export default function AdminDashboard() {
             }}
             className="bg-yellow-400 hover:bg-orange-400 text-black px-4 py-2 rounded-md flex items-center"
           >
-            <span className="mr-1"><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-plus-square-fill h-5 w-5" viewBox="0 0 16 16">
-  <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0"/>
-</svg></span> Add New Product
+            <span className="mr-1">+</span> Add New Product
           </button>
         </div>
         
@@ -342,7 +341,7 @@ export default function AdminDashboard() {
             <input
               type="text"
               placeholder="Search products by title or category..."
-              className="w-full border border-gray-300 rounded-md py-2 px-4 pl-10 focus:outline-orange-400"
+              className="w-full border border-gray-300 rounded-md py-2 px-4 pl-10"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />

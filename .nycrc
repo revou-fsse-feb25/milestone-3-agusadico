@@ -1,0 +1,19 @@
+{
+  "extends": "@istanbuljs/nyc-config-babel",
+  "include": [
+    "src/app/admin/page.tsx",
+    "src/app/api/products/route.for-coverage.ts"
+  ],
+  "exclude": [
+    "**/*.test.js",
+    "**/*.test.jsx",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.js",
+    "**/*.spec.jsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/__tests__/**"
+  ],
+  "all": true
+}

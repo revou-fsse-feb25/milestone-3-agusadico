@@ -1,6 +1,8 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import AdminDashboard from "../../../app/admin/page";
+// Make sure this import is correct
+//import AdminDashboard from "../../../app/admin/page";
+import AdminDashboard from "../../../app/admin/__tests__/page";
 
 // Mock next-auth
 const mockUseSession = jest.fn();

@@ -67,8 +67,12 @@ export default async function Home({ searchParams }: any) {
     <section className="mt-12 rounded-xl px-8 py-10 max-w-7xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Featured Products</h2>
       <div className="mb-4 flex gap-2">
-        <a href="?view=card" className={`px-4 py-2 rounded ${viewMode === 'card' ? 'bg-yellow-400 text-black' : 'bg-gray-200'}`}>Card View</a>
-        <a href="?view=list" className={`px-4 py-2 rounded ${viewMode === 'list' ? 'bg-yellow-400 text-black' : 'bg-gray-200'}`}>List View</a>
+        <a href="?view=card" className={`px-4 py-2 rounded ${viewMode === 'card' ? 'bg-yellow-400 text-black' : 'bg-gray-200'}`}><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-view-stacked w-5 h-5 items-center" viewBox="0 0 16 16">
+  <path d="M3 0h10a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2m0 1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zm0 8h10a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2m0 1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"/>
+</svg></a>
+        <a href="?view=list" className={`px-4 py-2 rounded ${viewMode === 'list' ? 'bg-yellow-400 text-black' : 'bg-gray-200'}`}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-view-list w-5 h-5 items-center" viewBox="0 0 16 16">
+  <path d="M3 4.5h10a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2m0 1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1zM1 2a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 2m0 12a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 14"/>
+</svg></a>
       </div>
       <ShopRow products={products} viewMode={viewMode} />
     </section>

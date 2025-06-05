@@ -96,7 +96,7 @@ export default function AdminProductForm({
           <button 
             type="submit" 
             disabled={loading}
-            className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-4 py-2 rounded"
+            className="bg-yellow-400 hover:bg-orange-400 disabled:bg-blue-400 text-black px-4 py-2 rounded"
           >
             {loading ? 'Processing...' : (editingId ? 'Update' : 'Add')} Product
           </button>

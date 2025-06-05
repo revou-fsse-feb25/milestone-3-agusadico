@@ -1,5 +1,6 @@
 'use client';
 import { Product } from '../types/type';
+import { useState } from 'react';
 
 interface AdminProductTableProps {
   products: Product[];
@@ -14,10 +15,36 @@ export default function AdminProductTable({
   onEdit, 
   onDelete 
 }: AdminProductTableProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10;
+  
   const filteredProducts = products.filter(product =>
     product.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.category?.name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  
+  // Calculate pagination values
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  
+  // Handle page navigation
+  const goToPage = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+  
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+  
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -33,16 +60,16 @@ export default function AdminProductTable({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredProducts.length === 0 ? (
+            {currentProducts.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
                   {searchQuery ? 'No products found matching your search.' : 'No products available.'}
                 </td>
               </tr>
             ) : (
-              filteredProducts.map((product, index) => (
+              currentProducts.map((product, index) => (
                 <tr key={product.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{indexOfFirstProduct + index + 1}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center">
                       {product.images?.[0] && (
@@ -97,20 +124,35 @@ export default function AdminProductTable({
       {/* Pagination */}
       <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
         <div className="text-sm text-gray-700">
-          Showing <span className="font-medium">1</span> to <span className="font-medium">{filteredProducts.length}</span> of <span className="font-medium">{filteredProducts.length}</span> results
+          Showing <span className="font-medium">{indexOfFirstProduct + 1}</span> to <span className="font-medium">
+            {Math.min(indexOfLastProduct, filteredProducts.length)}
+          </span> of <span className="font-medium">{filteredProducts.length}</span> results
         </div>
         <div className="flex-1 flex justify-end">
           <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-            <button className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+            <button 
+              onClick={goToPreviousPage}
+              disabled={currentPage === 1}
+              className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium ${currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-50'}`}
+            >
               Previous
             </button>
-            <button className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-600 text-sm font-medium text-white hover:bg-blue-700">
-              1
-            </button>
-            <button className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-              2
-            </button>
-            <button className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+            
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNumber => (
+              <button
+                key={pageNumber}
+                onClick={() => goToPage(pageNumber)}
+                className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium ${pageNumber === currentPage ? 'bg-yellow-400 text-black hover:bg-orange-400' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+              >
+                {pageNumber}
+              </button>
+            ))}
+            
+            <button 
+              onClick={goToNextPage}
+              disabled={currentPage === totalPages}
+              className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium ${currentPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-50'}`}
+            >
               Next
             </button>
           </nav>
