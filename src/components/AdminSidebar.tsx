@@ -13,7 +13,7 @@ export default function AdminSidebar({ userName }: AdminSidebarProps) {
       <div className="mb-4">
       <Image src="/images/logo-revoshop-footer.png" alt="Logo" width={151} height={42} />
         <h1 className="text-xl font-bold">Admin Dashboard</h1>
-        <p className="text-sm text-gray-600">Welcome, {userName}</p>
+        <p className="text-sm text-gray-600">Welcome, <span className="ml-1 px-2 py-0.5 bg-green-100 text-green-800 text-xs font-medium rounded-full">{userName}</span></p>
       </div>
       
       <nav className="space-y-2">
@@ -45,16 +45,21 @@ export default function AdminSidebar({ userName }: AdminSidebarProps) {
       </nav>
       
       <div className="mt-auto space-y-2">
-        <Link href="/" className="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">
-          Back to Home
+        <Link href="/" className="flex items-center gap-2 py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-house-door-fill w-5 h-5" viewBox="0 0 16 16">
+  <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5"/>
+</svg>Back to Home
         </Link>
         <button 
           onClick={() => {
             import('next-auth/react').then(({ signOut }) => signOut());
           }}
-          className="block w-full text-left py-2 px-4 text-red-600 hover:bg-red-50 rounded"
+          className="flex items-center w-full text-left py-2 px-4 text-red-600 hover:bg-red-50 rounded"
         >
-          Sign Out
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-power w-5 h-5" viewBox="0 0 16 16">
+  <path d="M7.5 1v7h1V1z"/>
+  <path d="M3 8.812a5 5 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812"/>
+</svg>Sign Out
         </button>
       </div>
     </div>

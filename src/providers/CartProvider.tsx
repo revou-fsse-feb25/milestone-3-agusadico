@@ -18,6 +18,8 @@ type CartContextType = {
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
   subtotal: number;
+  showNotification: boolean;
+  setShowNotification: (show: boolean) => void;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -32,6 +34,7 @@ export function useCart() {
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [showNotification, setShowNotification] = useState(false);
   
   // Load cart from localStorage on initial render
   useEffect(() => {
@@ -74,6 +77,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
         ];
       }
     });
+    
+    // Show notification when item is added to cart
+    setShowNotification(true);
+    
+    // Hide notification after 3 seconds
+    setTimeout(() => {
+      setShowNotification(false);
+    }, 3000);
   };
   
   const removeFromCart = (productId: string) => {
@@ -108,7 +119,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     removeFromCart,
     updateQuantity,
     clearCart,
-    subtotal
+    subtotal,
+    showNotification,
+    setShowNotification
   };
   
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
