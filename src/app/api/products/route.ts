@@ -5,12 +5,14 @@ import { Product } from '../../../types/type';
 let products: Product[] = [];
 
 // Helper function to reset products for testing
-// Export for testing purposes but mark as internal
-/** @internal */
-export function resetProducts() {
+// Make it non-exported for production build
+function resetProducts() {
   products = [];
   return true; // Return value to ensure function execution is covered
 }
+
+// For testing purposes, expose the function on the GET handler
+GET.resetProducts = resetProducts;
 
 export async function GET() {
   return NextResponse.json(products);

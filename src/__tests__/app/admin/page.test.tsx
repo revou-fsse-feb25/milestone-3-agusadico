@@ -1,8 +1,8 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 // Make sure this import is correct
-//import AdminDashboard from "../../../app/admin/page";
-import AdminDashboard from "../../../app/admin/__tests__/page";
+import AdminDashboard from "../../../app/admin/page";
+//import AdminDashboard from "../../../app/admin/__tests__/page";
 
 // Mock next-auth
 const mockUseSession = jest.fn();
@@ -627,7 +627,7 @@ describe("AdminDashboard", () => {
       
       await waitFor(() => screen.getByTestId("product-table"));
       
-      fireEvent.click(screen.getByText(/add new product/i));
+      fireEvent.click(screen.getByTestId("product-1"));
       
       fireEvent.change(screen.getByTestId("title-input"), { 
         target: { value: "New Product" } 
@@ -662,6 +662,130 @@ describe("AdminDashboard", () => {
       await waitFor(() => {
         expect(mockAlert).toHaveBeenCalledWith("Failed to update product. Please try again.");
       });
+    });
+  });
+});
+
+// Add these tests to your existing test file
+
+describe("Admin Dashboard UI and Interactions", () => {
+  beforeEach(() => {
+    // Mock successful API responses
+    mockFetch.mockImplementation((url) => {
+      if (url.includes('/products')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockProducts)
+        });
+      } else if (url.includes('/categories')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockCategories)
+        });
+      }
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({})
+      });
+    });
+
+    // Mock authenticated admin session
+    mockUseSession.mockReturnValue({
+      status: "authenticated",
+      data: { user: { name: "Admin User", role: "admin" } }
+    });
+  });
+
+  it("renders the admin dashboard with products", async () => {
+    render(<AdminDashboard />);
+    
+    // Wait for products to load
+    await waitFor(() => {
+      expect(screen.getByTestId("admin-dashboard")).toBeInTheDocument();
+    });
+    
+    // Check if product table is rendered
+    expect(screen.getByTestId("product-table-container")).toBeInTheDocument();
+    
+    // Check if products are displayed
+    await waitFor(() => {
+      expect(screen.getByTestId("product-1")).toBeInTheDocument();
+    });
+  });
+
+  it("allows searching for products", async () => {
+    render(<AdminDashboard />);
+    
+    // Wait for products to load
+    await waitFor(() => {
+      expect(screen.getByTestId("search-input")).toBeInTheDocument();
+    });
+    
+    // Type in search box
+    const searchInput = screen.getByTestId("search-input");
+    fireEvent.change(searchInput, { target: { value: "Electronics" } });
+    
+    // Check if filtered products are displayed
+    await waitFor(() => {
+      expect(screen.getByTestId("product-1")).toBeInTheDocument();
+      // Product 2 should be filtered out if it doesn't match "Electronics"
+      expect(screen.queryByTestId("product-2")).not.toBeInTheDocument();
+    });
+  });
+
+  it("shows the product form when add button is clicked", async () => {
+    render(<AdminDashboard />);
+    
+    // Wait for dashboard to load
+    await waitFor(() => {
+      expect(screen.getByTestId("add-product-button")).toBeInTheDocument();
+    });
+    
+    // Click add product button
+    fireEvent.click(screen.getByTestId("add-product-button"));
+    
+    // Check if form is displayed
+    expect(screen.getByTestId("product-form-container")).toBeInTheDocument();
+  });
+
+  it("allows editing a product", async () => {
+    render(<AdminDashboard />);
+    
+    // Wait for products to load
+    await waitFor(() => {
+      expect(screen.getByTestId("product-1")).toBeInTheDocument();
+    });
+    
+    // Click edit button for first product
+    fireEvent.click(screen.getByTestId("edit-button-1"));
+    
+    // Check if form is displayed with product data
+    await waitFor(() => {
+      expect(screen.getByTestId("product-form-container")).toBeInTheDocument();
+      expect(screen.getByTestId("title-input")).toHaveValue("Mock Product");
+    });
+  });
+
+  it("allows deleting a product with confirmation", async () => {
+    // Mock confirm to return true
+    mockConfirm.mockReturnValue(true);
+    
+    render(<AdminDashboard />);
+    
+    // Wait for products to load
+    await waitFor(() => {
+      expect(screen.getByTestId("product-1")).toBeInTheDocument();
+    });
+    
+    // Click delete button for first product
+    fireEvent.click(screen.getByTestId("delete-button-1"));
+    
+    // Check if confirmation was shown
+    expect(mockConfirm).toHaveBeenCalled();
+    
+    // Check if product was removed
+    await waitFor(() => {
+      expect(screen.queryByTestId("product-1")).not.toBeInTheDocument();
     });
   });
 });

@@ -16,10 +16,36 @@ export default function NavbarClient() {
   const [mounted, setMounted] = useState(false);
   const [isCartHighlighted, setIsCartHighlighted] = useState(false);
   const [prevCartItemsLength, setPrevCartItemsLength] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // Prevent hydration mismatch by only rendering client-specific elements after mount
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Handle scroll event to make navbar sticky
+  useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+    
+    const handleScroll = () => {
+      if (window.scrollY > 50) { // Reduced threshold to make it sticky sooner
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    // Add scroll event listener
+    window.addEventListener('scroll', handleScroll);
+    
+    // Initial check on mount
+    handleScroll();
+    
+    // Clean up event listener
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   // Add animation effect when cart items change
@@ -53,7 +79,14 @@ export default function NavbarClient() {
 
   return (
     <>
-      <div className="w-full bg-white">
+      <div 
+        className={`w-full bg-white ${isScrolled ? 'fixed top-0 left-0 right-0 z-[100] shadow-lg transition-all duration-300 ease-in-out' : ''}`}
+        style={{ 
+          position: isScrolled ? 'fixed' : 'relative',
+          width: '100%',
+          transition: 'all 0.3s ease-in-out'
+        }}
+      >
         <nav className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between py-3 gap-x-6">
             {/* Left: Logo & Category (hide category on mobile) */}
@@ -137,6 +170,9 @@ export default function NavbarClient() {
           <span className="bg-yellow-400 text-black px-6 py-2 rounded font-semibold flex items-center gap-2"><span className="fa-solid fa-phone"></span> Hotline Number: +62812 3456 7890</span>
         </div>
       </div>
+      
+      {/* Add a spacer when navbar is fixed to prevent content jump */}
+      {isScrolled && <div className="h-[150px] md:h-[170px]"></div>}
       
       {/* Toast notification */}
       {mounted && showNotification && (

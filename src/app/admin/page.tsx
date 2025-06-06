@@ -16,14 +16,14 @@ type Category = {
 
 // Loading component
 const LoadingSpinner = () => (
-  <div className="flex items-center justify-center min-h-screen">
+  <div className="flex items-center justify-center min-h-screen" data-testid="loading-spinner" role="status">
     <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
   </div>
 );
 
 // Unauthorized access component
 const UnauthorizedAccess = () => (
-  <div className="flex items-center justify-center min-h-screen bg-gray-50">
+  <div className="flex items-center justify-center min-h-screen bg-gray-50" data-testid="unauthorized-access">
     <div className="max-w-md mx-auto text-center">
       <div className="mb-4">
         <svg className="mx-auto h-12 w-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -315,7 +315,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50" data-testid="admin-dashboard">
       {/* Sidebar */}
       <AdminSidebar userName={session?.user?.name ?? undefined} />
       
@@ -324,6 +324,7 @@ export default function AdminDashboard() {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">Product Management</h2>
           <button 
+            data-testid="add-product-button"
             onClick={() => { 
               resetForm();
               setShowForm(true);
@@ -340,6 +341,7 @@ export default function AdminDashboard() {
         <div className="mb-6">
           <div className="relative">
             <input
+              data-testid="search-input"
               type="text"
               placeholder="Search products by title or category..."
               className="w-full border border-gray-300 rounded-md py-2 px-4 pl-10 focus:outline-orange-400"
@@ -356,25 +358,29 @@ export default function AdminDashboard() {
         
         {/* Form (conditionally rendered) */}
         {(editingId || showForm) && (
-          <AdminProductForm
-            form={form}
-            categories={categories}
-            editingId={editingId}
-            loading={loading}
-            onSubmit={handleSubmit}
-            onChange={handleChange}
-            onCancel={resetForm}
-            onImageChange={handleImageChange}
-          />
+          <div data-testid="product-form-container">
+            <AdminProductForm
+              form={form}
+              categories={categories}
+              editingId={editingId}
+              loading={loading}
+              onSubmit={handleSubmit}
+              onChange={handleChange}
+              onCancel={resetForm}
+              onImageChange={handleImageChange}
+            />
+          </div>
         )}
         
         {/* Products Table */}
-        <AdminProductTable 
-          products={products}
-          searchQuery={searchQuery}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+        <div data-testid="product-table-container">
+          <AdminProductTable 
+            products={products}
+            searchQuery={searchQuery}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        </div>
       </div>
     </div>
   );
